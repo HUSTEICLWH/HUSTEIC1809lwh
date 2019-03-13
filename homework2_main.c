@@ -38,4 +38,4 @@ int main()
     float x0;
     scanf("%d%f",&n,&x0);
     printf("%f",print(n,x0));
-}                            //时间复杂度为O(n)
+}                            //O(n)

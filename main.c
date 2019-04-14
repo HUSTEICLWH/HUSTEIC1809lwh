@@ -1,182 +1,62 @@
 #include <stdio.h>
 #include <stdlib.h>
-
-#define maxsize 1000
-
-typedef float datatype;
-
-typedef struct Node
+#define n 4
+#define Maxsize 100
+struct stack{
+    int data[Maxsize];
+    int top;
+}s;
+void init()
 {
-    datatype data;
-    Node *next;
-} List;
-
-List *init()
-{
-    List *L = (List *)malloc(sizeof(Node));
-    L->next = NULL;
-    return L;
+    s.top=-1;
 }
-
-int length(List *L)
+int push(int x)
 {
-    List *p = L;
-    int j = 0;
-    while (p)
-    {
-        p = p->next;
-        ++j;
-    }
-    return j;
-}
-
-
-List *find(datatype x, List *L)
-{
-    List *p = L;
-    while ( p!=NULL && p->data != x)
-    {
-        p = p->next;
-    }
-    return p;
-}
-
-List *findkth(int k, List *L)
-{
-    List *p = L;
-    int i = 1;
-    while (p != NULL && i < k)
-    {
-        p = p->next;
-        ++i;
-    }
-
-    if ( i == k )
-    {
-        return p;
-    }
-    else
-    {
-        return NULL;
+    if(s.top==Maxsize-1) return -1;
+    else{
+        s.top++;
+        s.data[s.top]=x;
     }
 }
-
-List * insert(List *L, int i, datatype x)
+int pop()
 {
-    List *p, *s;
-
-    if (i==1)
-    {
-        s = (List *) malloc( sizeof(List) );
-        s->data = x;
-        s->next = L;
-        return s;
+    int x;
+    if(s.top==-1) return -1;
+    else{
+        x=s.data[s.top];
+        s.top--;
     }
-
-    p = findkth(i-1, L);
-    if ( NULL == p )
-    {
-        printf("out of range\n");
-        return NULL;
-    }
-    else
-    {
-        s = (List *) malloc( sizeof(List) );
-        s->data = x;
-        s->next = p->next;
-        p->next = s;
-        return L;
-    }
+    return x;
 }
-List * Delete(List *L, int i)
+int isempty()
 {
-    list *p,*s;
-    if(i==1){
-        s=p;
-      if(p!=NULL){p=p->next;}
-      else return NULL;
-      free(s);
-      return p;
-    }
-    p=findkth(i-1,L);
-    if ( p == NULL )
-    {
-		printf("第%d个结点不存在", i-1);     return NULL;
-    }
-    else  if ( p->Next == NULL )
-  {
-		printf("第%d个结点不存在", i);    return NULL;
-   }
-   else{
-    s=p,p->next=s->next;
-    free(s);return p;
-   }
+    if(s.top==-1) return 1;
+    else return 0;
 }
-void print_list(List *L)
-{
-    List *p = L;
-    while (NULL != p)
-    {
-        printf("%f ", p->data);
-        if (p->next != NULL)
-        {
-            printf("-> ");
-        }
-        p = p->next;
-    }
-
-    printf("\n");
-}
-
-List* inverse(List *L)
-{
-    List *p = L;
-    List *q = NULL;
-    List *head = NULL;
-
-    while (p)
-    {
-        q = p->next;
-        p->next = head;
-        head = p;
-        p = q;
-    }
-
-    return head;
-}
-
-
 int main()
 {
-    int i = 0;
-    datatype x = 0;
-    List* px;
-
-    List* L = init();
-    for (i=0; i<5; ++i)
-    {
-        insert(L, i+1, i*i);
+    init();
+    int path[n];
+    int i=0,pos=0;
+    getit(pos,path,i);
+}
+void getit(int pos,int path[],int i)
+{
+    int temp;
+    if(pos<n){
+        push(pos+1);
+        getit(pos+1,path,i);
+        pop();
     }
-    printf("list len = %d\n", length(L) );
-    print_list(L);
-
-    insert(L, 3, 300);
-    print_list(L);
-
-    x = 9;
-    px = find(x, L);
-    if (px)
-    {
-        printf("%f is found, its next node is %f\n", px->data, px->next->data );
+    if(isempty()==0){
+        temp=pop();
+        path[i++]=temp;
+        getit(pos,path,i);
+        push(temp);
     }
-    else
+    if(isempty()==1&&pos==n)
     {
-        printf("%f is not found\n", x);
+        for(int j=0;j<i;printf("%d\t",path[j++]));
+        printf("\n");
     }
-
-    // printf("inverse it: ");
-    // List* iL = inverse(L);
-    // print_list(iL);
-
-    return 1;
 }
